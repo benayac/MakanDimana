@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    app:cardCornerRadius="10dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/imgResto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_launcher_background"
+            android:padding="16dp"/>
+
+        <TextView
+            android:id="@+id/tvRestoName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Food Name"
+            android:textSize="28dp"
+            android:layout_toRightOf="@id/imgResto"
+            android:layout_marginTop="24dp"/>
+
+        <TextView
+            android:id="@+id/tvRestoDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1.23 KM"
+            android:textSize="20dp"
+            android:layout_toRightOf="@id/imgResto"
+            android:layout_below="@id/tvRestoName"
+            android:layout_marginTop="6dp"/>
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

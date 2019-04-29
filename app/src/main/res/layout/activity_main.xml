@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginVertical="100dp"
+        android:padding="10dp"
+        app:cardBackgroundColor="#ffff"
+        app:cardCornerRadius="20dp">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/imgLogo"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="70dp"
+                android:src="@drawable/restaurant" />
+
+            <TextView
+                android:id="@+id/tvEatWhere"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/imgLogo"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="35dp"
+                android:fontFamily="@font/robotobold"
+                android:text="Mau Makan Dimana?"
+                android:textColor="#2e1e10"
+                android:textSize="32sp" />
+
+            <EditText
+                android:id="@+id/etDuit"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvEatWhere"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="16dp"
+                android:hint="Berapa duitmu?"
+                android:inputType="number" />
+
+            <Spinner
+                android:id="@+id/spinnerJenismKanan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/etDuit"
+                android:layout_marginHorizontal="80dp"
+                android:layout_marginTop="18dp" />
+
+            <Button
+                android:id="@+id/btnCari"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/spinnerJenismKanan"
+                android:layout_centerHorizontal="true"
+                android:layout_marginHorizontal="100dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_rounded"
+                android:fontFamily="@font/robotolight"
+                android:text="Cari Restoran"
+                android:textColor="#fff" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+</RelativeLayout>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RestaurantDetailActivity"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:src="@drawable/mmimage"/>
+
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/titleCardView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="6dp">
+
+        <RelativeLayout
+            android:id="@+id/restaurantDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:fontFamily="@font/robotomedium"
+                android:textColor="#000"
+                android:id="@+id/tvNamaResto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingTop="16dp"
+                android:text="Burjo Mekar Mulya"
+                android:textSize="32dp" />
+
+            <TextView
+                android:id="@+id/tvRestoType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvNamaResto"
+                android:layout_marginHorizontal="16dp"
+                android:text="Warmindo"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/tvOpenHour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvRestoType"
+                android:padding="16dp"
+                android:paddingBottom="30dp"
+                android:text="Opening Hours" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvRestoType"
+                android:layout_alignParentRight="true"
+                android:layout_marginHorizontal="10dp"
+                android:padding="16dp"
+                android:paddingBottom="30dp"
+                android:text="08:00-22:00" />
+
+        </RelativeLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recylcerviewMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/list_makanan_card" />
+
+    </ScrollView>
+</LinearLayout>
