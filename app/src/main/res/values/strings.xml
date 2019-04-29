@@ -1,4 +1,15 @@
 <resources>
     <string name="app_name">MakanDimana</string>
     <string name="title_activity_maps">Map</string>
+    <string name="menu_prompt">Pilih Menu</string>
+    
+    <string-array name="menu_arrays">
+        <item>Nasi</item>
+        <item>Ayam</item>
+        <item>Ikan</item>
+        <item>Mie</item>
+        <item>Sayur</item>
+        <item>Kue</item>
+        <item>Minuman</item>
+    </string-array>
 </resources>

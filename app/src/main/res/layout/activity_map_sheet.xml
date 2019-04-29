@@ -27,16 +27,20 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="#EEEEEE">
 
             <TextView
                 android:id="@+id/tvShowMore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="Show More" />
+                android:textSize="18sp"
+                android:text="Tampilkan Daftar"
+                android:fontFamily="@font/robotobold"/>
 
             <android.support.v7.widget.RecyclerView
+                android:id="@+id/recylcerviewRestoran"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:listitem="@layout/list_restoran_card" />
@@ -53,7 +57,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:background="#FFFF"
+            android:background="#EEEEEE"
             android:orientation="horizontal">
 
             <TextView
@@ -74,7 +78,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="25dp"
                 app:cardCornerRadius="14dp"
-                app:cardBackgroundColor="#EEEEEE">
+                app:cardBackgroundColor="#E0E0E0">
                 <TextView
                     android:paddingHorizontal="12dp"
                     android:paddingVertical="6dp"
@@ -89,7 +93,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="15dp"
                 app:cardCornerRadius="14dp"
-                app:cardBackgroundColor="#EEEEEE">
+                app:cardBackgroundColor="#E0E0E0">
                 <TextView
                     android:paddingHorizontal="12dp"
                     android:paddingVertical="6dp"
@@ -104,7 +108,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="15dp"
                 app:cardCornerRadius="14dp"
-                app:cardBackgroundColor="#EEEEEE">
+                app:cardBackgroundColor="#E0E0E0">
                 <TextView
                     android:paddingHorizontal="12dp"
                     android:paddingVertical="6dp"
@@ -119,7 +123,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="15dp"
                 app:cardCornerRadius="14dp"
-                app:cardBackgroundColor="#EEEEEE">
+                app:cardBackgroundColor="#E0E0E0">
                 <TextView
                     android:paddingHorizontal="12dp"
                     android:paddingVertical="6dp"
@@ -134,7 +138,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="15dp"
                 app:cardCornerRadius="14dp"
-                app:cardBackgroundColor="#EEEEEE">
+                app:cardBackgroundColor="#E0E0E0">
                 <TextView
                     android:paddingHorizontal="12dp"
                     android:paddingVertical="6dp"

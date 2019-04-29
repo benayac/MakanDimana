@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@drawable/bg">
 
 
     <android.support.v7.widget.CardView
@@ -12,7 +13,7 @@
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
         android:layout_marginHorizontal="30dp"
-        android:layout_marginVertical="100dp"
+        android:layout_marginTop="250dp"
         android:padding="10dp"
         app:cardBackgroundColor="#ffff"
         app:cardCornerRadius="20dp">
@@ -34,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/imgLogo"
-                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
                 android:layout_marginTop="35dp"
                 android:fontFamily="@font/robotobold"
                 android:text="Mau Makan Dimana?"
@@ -44,15 +45,19 @@
             <EditText
                 android:id="@+id/etDuit"
                 android:layout_width="300dp"
+                android:padding="10dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tvEatWhere"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="16dp"
                 android:hint="Berapa duitmu?"
-                android:inputType="number" />
+                android:inputType="number"
+                android:background="@drawable/rounded_edittext"/>
 
             <Spinner
                 android:id="@+id/spinnerJenismKanan"
+                android:prompt="@string/menu_prompt"
+                android:entries="@array/menu_arrays"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/etDuit"
