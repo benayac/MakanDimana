@@ -1,0 +1,77 @@
+{
+  "project_info": {
+    "project_number": "1031987310615",
+    "firebase_url": "https://makan-dimana-455a2.firebaseio.com",
+    "project_id": "makan-dimana-455a2",
+    "storage_bucket": "makan-dimana-455a2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1031987310615:android:c91882e531fc6d88",
+        "android_client_info": {
+          "package_name": "com.example.makandimana"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1031987310615-5n56f4jgceq8ppg4glegphv3n8dkt509.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.makandimana",
+            "certificate_hash": "f32f2748ea97571e9772ffa638688db52e0b827c"
+          }
+        },
+        {
+          "client_id": "1031987310615-rko4r2g1efknnok4f0r3nrp6k9dnv0vr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOL_9fWVRWdGQS3eLsGX3bbYev629GiCM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1031987310615-rko4r2g1efknnok4f0r3nrp6k9dnv0vr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1031987310615:android:43bab8bae01b7c5b",
+        "android_client_info": {
+          "package_name": "com.example.makandimana3"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1031987310615-rko4r2g1efknnok4f0r3nrp6k9dnv0vr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOL_9fWVRWdGQS3eLsGX3bbYev629GiCM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1031987310615-rko4r2g1efknnok4f0r3nrp6k9dnv0vr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
