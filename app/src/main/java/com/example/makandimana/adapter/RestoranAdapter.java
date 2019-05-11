@@ -32,7 +32,7 @@ public class RestoranAdapter extends RecyclerView.Adapter<RestoranAdapter.Restor
 
     @Override
     public void onBindViewHolder(@NonNull RestoranViewHolder restoranViewHolder, int i) {
-        String imgUrl = restoranList.get(i).getImgUrl();
+        /*String imgUrl = restoranList.get(i).getImgUrl();
 
         restoranViewHolder.tvRestoName.setText(restoranList.get(i).getNamaResto());
         restoranViewHolder.tvFoodType.setText(restoranList.get(i).getFoodType());
@@ -40,6 +40,7 @@ public class RestoranAdapter extends RecyclerView.Adapter<RestoranAdapter.Restor
         restoranViewHolder.tvAvgPrice.setText(restoranList.get(i).getAveragePrice());
 
         Picasso.get().load(imgUrl).resize(150, 150).centerInside().into(restoranViewHolder.imgResto);
+        */
 
     }
 

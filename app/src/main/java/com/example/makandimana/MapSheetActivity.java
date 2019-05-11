@@ -115,13 +115,13 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
 
         restoranArrayList = new ArrayList<>();
 
-        restoranArrayList.add(new RestoranModel("Kafe TETI", "Snack", "Rp 4.000 - Rp 10.000",
-                "1.0KM", "https://pasca.jteti.ugm.ac.id/wp-content/uploads/sites/404/2018/01/wellcome2-1024x527.jpg"));
-        restoranArrayList.add(new RestoranModel("Burjo Mekar Mulya", "Nasi", "Rp 5.000 - Rp 10.000",
-                "2.0KM", "https://lh3.googleusercontent.com/4g_JU68GDOWudpc00s_P8hHRh_MM2NeLKqHjcZ7fPOHgyBAr4G9vVYuo-GbSqSivRBpflcOt=s1280-p-no-v1"));
-        restoranArrayList.add(new RestoranModel("Waroeng SS", "Nasi", "Rp 15.000 - Rp 30.000", "1.5KM",
-                "http://2.bp.blogspot.com/-f1-eIW-9uOg/VlQRx-GGLFI/AAAAAAAALSs/DY4_6rej3AA/s1600/PB213707.JPG"));
-        restoranArrayList.add(new RestoranModel("Bakmi Afui","Mie", "Rp 8.000 - Rp 15.000", "1.8KM",
-                "http://www.waktumakan.com/wp-content/uploads/2016/04/Mie-Palembang-Afui-Kini-Hadir-di-Jogja.jpg"));
+        restoranArrayList.add(new RestoranModel("Kafe TETI", "Snack", "https://pasca.jteti.ugm.ac.id/wp-content/uploads/sites/404/2018/01/wellcome2-1024x527.jpg",
+                -7.765874, 110.371725, 5000, 10000));
+        restoranArrayList.add(new RestoranModel("Burjo Mekar Mulya", "Nasi", "https://lh3.googleusercontent.com/4g_JU68GDOWudpc00s_P8hHRh_MM2NeLKqHjcZ7fPOHgyBAr4G9vVYuo-GbSqSivRBpflcOt=s1280-p-no-v1",
+                -7.761575, 110.375409,5000,10000));
+        restoranArrayList.add(new RestoranModel("Waroeng SS", "Nasi", "http://2.bp.blogspot.com/-f1-eIW-9uOg/VlQRx-GGLFI/AAAAAAAALSs/DY4_6rej3AA/s1600/PB213707.JPG",
+                -7.762638, 110.375731, 15000, 30000));
+        restoranArrayList.add(new RestoranModel("Bakmi Afui","Mie", "http://www.waktumakan.com/wp-content/uploads/2016/04/Mie-Palembang-Afui-Kini-Hadir-di-Jogja.jpg",
+                -7.761946, 110.378177, 8000, 15000));
     }
 }

@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="@drawable/bg">
+    android:background="@drawable/bg"
+    tools:context=".MainActivity">
 
 
     <android.support.v7.widget.CardView
@@ -19,65 +19,72 @@
         app:cardCornerRadius="20dp">
 
         <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/imgLogo"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="70dp"
-                android:src="@drawable/restaurant" />
-
-            <TextView
-                android:id="@+id/tvEatWhere"
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/imgLogo"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="35dp"
-                android:fontFamily="@font/robotobold"
-                android:text="Mau Makan Dimana?"
-                android:textColor="#2e1e10"
-                android:textSize="32sp" />
+                android:layout_centerInParent="true">
 
-            <EditText
-                android:id="@+id/etDuit"
-                android:layout_width="300dp"
-                android:padding="10dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvEatWhere"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="16dp"
-                android:hint="Berapa duitmu?"
-                android:inputType="number"
-                android:background="@drawable/rounded_edittext"/>
+                <ImageView
+                    android:id="@+id/imgLogo"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="50dp"
+                    android:src="@drawable/restaurant" />
 
-            <Spinner
-                android:id="@+id/spinnerJenismKanan"
-                android:prompt="@string/menu_prompt"
-                android:entries="@array/menu_arrays"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/etDuit"
-                android:layout_marginHorizontal="80dp"
-                android:layout_marginTop="18dp" />
+                <TextView
+                    android:id="@+id/tvEatWhere"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/imgLogo"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="25dp"
+                    android:fontFamily="@font/robotobold"
+                    android:text="Mau Makan Dimana?"
+                    android:textColor="#2e1e10"
+                    android:textSize="28sp" />
 
-            <Button
-                android:id="@+id/btnCari"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/spinnerJenismKanan"
-                android:layout_centerHorizontal="true"
-                android:layout_marginHorizontal="100dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/btn_rounded"
-                android:fontFamily="@font/robotolight"
-                android:text="Cari Restoran"
-                android:textColor="#fff" />
+                <EditText
+                    android:id="@+id/etDuit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvEatWhere"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/rounded_edittext"
+                    android:hint="Berapa duitmu?"
+                    android:inputType="number"
+                    android:padding="10dp" />
+
+                <Spinner
+                    android:id="@+id/spinnerJenismKanan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/etDuit"
+                    android:layout_marginHorizontal="80dp"
+                    android:layout_marginTop="18dp"
+                    android:entries="@array/menu_arrays"
+                    android:prompt="@string/menu_prompt" />
+
+                <Button
+                    android:id="@+id/btnCari"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/spinnerJenismKanan"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginHorizontal="100dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/btn_rounded"
+                    android:fontFamily="@font/robotolight"
+                    android:text="Cari Restoran"
+                    android:textColor="#fff" />
+
+            </RelativeLayout>
 
         </RelativeLayout>
-
     </android.support.v7.widget.CardView>
 </RelativeLayout>
