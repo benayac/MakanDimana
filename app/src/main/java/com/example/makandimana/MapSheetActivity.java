@@ -11,11 +11,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.makandimana.adapter.RestoranAdapter;
 import com.example.makandimana.adapter.menuMakananAdapter;
 import com.example.makandimana.model.RestoranModel;
 import com.example.makandimana.model.menuMakananModel;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -24,7 +26,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import com.example.*;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -34,16 +44,19 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
     private CardView cardView;
     private RecyclerView recyclerView;
     private RestoranAdapter restoranAdapter;
-    private ArrayList<RestoranModel> restoranArrayList;
+    private DatabaseReference db;
+    private Query query;
+    private List<String> restoList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_sheet);
 
-        addData();
-
         cardView = findViewById(R.id.cvSortJarak);
+        mShowMore = findViewById(R.id.tvShowMore);
+        View bottomSheet = findViewById(R.id.bottom_sheet);
+        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
 
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,15 +65,61 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
                 startActivity(intent);
             }
         });
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        mShowMore = findViewById(R.id.tvShowMore);
+        bottomSheetCallback();
+        setUpRecyclerView();
+        createRestoList();
 
-        View bottomSheet = findViewById(R.id.bottom_sheet);
-        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        restoranAdapter.setOnItemClickListener(new RestoranAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Toast.makeText(MapSheetActivity.this, restoList.get(position), Toast.LENGTH_LONG).show();
+            }
+        });
 
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        // Add a marker in Sydney and move the camera
+        LatLng teti = new LatLng(-7.765874, 110.371725);
+        LatLng mm = new LatLng(-7.761575, 110.375409);
+        LatLng ss = new LatLng(-7.762638, 110.375731);
+        LatLng afui = new LatLng(-7.761946, 110.378177);
+        mMap.addMarker(new MarkerOptions().position(teti).title("Teti"));
+        mMap.addMarker(new MarkerOptions().position(mm).title("Burjo Mekar Mulya"));
+        mMap.addMarker(new MarkerOptions().position(ss).title("Waroeng SS"));
+        mMap.addMarker(new MarkerOptions().position(afui).title("Bakmi Afui"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(teti));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+    }
+
+    public void createRestoList(){
+        db = FirebaseDatabase.getInstance().getReference("restaurant");
+        db.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot> restos = dataSnapshot.getChildren();
+                restoList = new ArrayList<>();
+                for(DataSnapshot resto : restos){
+                    restoList.add(resto.getKey());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void bottomSheetCallback(){
         mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View view, int i) {
@@ -84,44 +143,36 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
 
             }
         });
+    }
+
+    public void setUpRecyclerView(){
+
+        query = FirebaseDatabase.getInstance().getReference("restaurant");
+        FirebaseRecyclerOptions<RestoranModel> options = new FirebaseRecyclerOptions.Builder<RestoranModel>()
+                .setQuery(query, RestoranModel.class)
+                .build();
 
         recyclerView = findViewById(R.id.recylcerviewRestoran);
-        restoranAdapter = new RestoranAdapter(restoranArrayList);
+        restoranAdapter = new RestoranAdapter(options);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MapSheetActivity.this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(restoranAdapter);
-
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        // Add a marker in Sydney and move the camera
-        LatLng teti = new LatLng(-7.765874, 110.371725);
-        LatLng mm = new LatLng(-7.761575, 110.375409);
-        LatLng ss = new LatLng(-7.762638, 110.375731);
-        LatLng afui = new LatLng(-7.761946, 110.378177);
-        mMap.addMarker(new MarkerOptions().position(teti).title("Teti"));
-        mMap.addMarker(new MarkerOptions().position(mm).title("Burjo Mekar Mulya"));
-        mMap.addMarker(new MarkerOptions().position(ss).title("Waroeng SS"));
-        mMap.addMarker(new MarkerOptions().position(afui).title("Bakmi Afui"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(teti));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+    protected void onStart() {
+        super.onStart();
+        if(restoranAdapter != null){
+            restoranAdapter.startListening();
+        }
     }
 
-    public void addData(){
-
-        restoranArrayList = new ArrayList<>();
-
-        restoranArrayList.add(new RestoranModel("Kafe TETI", "Snack", "https://pasca.jteti.ugm.ac.id/wp-content/uploads/sites/404/2018/01/wellcome2-1024x527.jpg",
-                -7.765874, 110.371725, 5000, 10000));
-        restoranArrayList.add(new RestoranModel("Burjo Mekar Mulya", "Nasi", "https://lh3.googleusercontent.com/4g_JU68GDOWudpc00s_P8hHRh_MM2NeLKqHjcZ7fPOHgyBAr4G9vVYuo-GbSqSivRBpflcOt=s1280-p-no-v1",
-                -7.761575, 110.375409,5000,10000));
-        restoranArrayList.add(new RestoranModel("Waroeng SS", "Nasi", "http://2.bp.blogspot.com/-f1-eIW-9uOg/VlQRx-GGLFI/AAAAAAAALSs/DY4_6rej3AA/s1600/PB213707.JPG",
-                -7.762638, 110.375731, 15000, 30000));
-        restoranArrayList.add(new RestoranModel("Bakmi Afui","Mie", "http://www.waktumakan.com/wp-content/uploads/2016/04/Mie-Palembang-Afui-Kini-Hadir-di-Jogja.jpg",
-                -7.761946, 110.378177, 8000, 15000));
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (restoranAdapter != null){
+            restoranAdapter.stopListening();
+        }
     }
 }

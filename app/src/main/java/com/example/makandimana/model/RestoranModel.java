@@ -6,6 +6,10 @@ public class RestoranModel {
     private double langitude, longitude;
     private int minPrice, maxPrice;
 
+    public RestoranModel(){
+
+    }
+
     public RestoranModel(String namaResto, String foodType, String imgUrl, double langitude, double longitude, int minPrice, int maxPrice) {
         this.namaResto = namaResto;
         this.imgUrl = imgUrl;

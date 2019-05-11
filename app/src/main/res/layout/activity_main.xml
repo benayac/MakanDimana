@@ -81,7 +81,7 @@
                     android:background="@drawable/btn_rounded"
                     android:fontFamily="@font/robotolight"
                     android:text="Cari Restoran"
-                    android:textColor="#fff" />
+                    android:textColor="#fff"/>
 
             </RelativeLayout>
 
