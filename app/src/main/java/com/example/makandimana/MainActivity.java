@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         btnCari.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddToFireabase();
+                //AddToFireabase();
                 Intent intent = new Intent(MainActivity.this, MapSheetActivity.class);
                 startActivity(intent);
 

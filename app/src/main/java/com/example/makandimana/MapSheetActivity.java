@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,6 +54,7 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_sheet);
 
+        createRestoList();
         cardView = findViewById(R.id.cvSortJarak);
         mShowMore = findViewById(R.id.tvShowMore);
         View bottomSheet = findViewById(R.id.bottom_sheet);
@@ -72,7 +74,6 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
 
         bottomSheetCallback();
         setUpRecyclerView();
-        createRestoList();
 
         restoranAdapter.setOnItemClickListener(new RestoranAdapter.OnItemClickListener() {
             @Override
@@ -87,8 +88,20 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        ArrayList<String> RestoName = createRestoNameList();
+        ArrayList<Double> RestoLat = createRestoLatList();
+        ArrayList<Double> RestoLang = createRestoLangList();
+
+        for(int i = 0; i < RestoName.size(); i++){
+            mMap.addMarker(new MarkerOptions().position(new LatLng(RestoLat.get(i), RestoLang.get(i)))
+                    .title(RestoName.get(i)));
+            Log.v("Latitude", String.valueOf(RestoLat.get(i)));
+            Log.v("Langitude", String.valueOf(RestoLang.get(i)));
+            Log.v("Resto Name", String.valueOf(RestoName.get(i)));
+
+        }
         // Add a marker in Sydney and move the camera
-        LatLng teti = new LatLng(-7.765874, 110.371725);
+        /*LatLng teti = new LatLng(-7.765874, 110.371725);
         LatLng mm = new LatLng(-7.761575, 110.375409);
         LatLng ss = new LatLng(-7.762638, 110.375731);
         LatLng afui = new LatLng(-7.761946, 110.378177);
@@ -97,7 +110,7 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
         mMap.addMarker(new MarkerOptions().position(ss).title("Waroeng SS"));
         mMap.addMarker(new MarkerOptions().position(afui).title("Bakmi Afui"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(teti));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(15));*/
     }
 
     public void createRestoList(){
@@ -175,4 +188,65 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
             restoranAdapter.stopListening();
         }
     }
+
+    public ArrayList<String> createRestoNameList(){
+
+        final ArrayList<String> restosList = new ArrayList<>();
+        db.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    restosList.add(dataSnapshot1.child("namaResto").getValue(String.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        return restosList;
+    }
+
+    public ArrayList<Double> createRestoLatList(){
+
+        final ArrayList<Double> restosLang = new ArrayList<>();
+        db.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    restosLang.add(dataSnapshot1.child("langitude").getValue(Double.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        return restosLang;
+    }
+
+    public ArrayList<Double> createRestoLangList(){
+
+        final ArrayList<Double> restosLong = new ArrayList<>();
+        db.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    restosLong.add(dataSnapshot1.child("longitude").getValue(Double.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        return restosLong;
+    }
+
 }
