@@ -1,9 +1,15 @@
 package com.example.makandimana;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -19,6 +25,8 @@ import com.example.makandimana.adapter.menuMakananAdapter;
 import com.example.makandimana.model.RestoranModel;
 import com.example.makandimana.model.menuMakananModel;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -27,6 +35,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.example.*;
@@ -37,7 +46,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCallback,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private BottomSheetBehavior mBottomSheetBehavior;
     private GoogleMap mMap;
@@ -52,19 +62,15 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_sheet);
-
         createRestoList();
         mShowMore = findViewById(R.id.tvShowMore);
         View bottomSheet = findViewById(R.id.bottom_sheet);
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
         bottomSheetCallback();
         setUpRecyclerView();
-
         restoranAdapter.setOnItemClickListener(new RestoranAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -74,12 +80,30 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
                 startActivity(intent);
             }
         });
-
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        db = FirebaseDatabase.getInstance().getReference("restaurant");
+        db.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot> restos = dataSnapshot.getChildren();
+                for(DataSnapshot resto : restos){
+                    Double lang = dataSnapshot.child(resto.getKey()).child("langitude").getValue(Double.class);
+                    Double lot = dataSnapshot.child(resto.getKey()).child("longitude").getValue(Double.class);
+                    mMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(lang, lot))
+                            .title(dataSnapshot.child(resto.getKey()).child("namaResto").getValue(String.class)));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         // Add a marker in Sydney and move the camera
         /*LatLng teti = new LatLng(-7.765874, 110.371725);
@@ -126,7 +150,7 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
                         mShowMore.setText("");
                         break;
                     case BottomSheetBehavior.STATE_COLLAPSED:
-                        mShowMore.setText("Show More");
+                        mShowMore.setText("Tampilkan Daftar");
                         break;
                 }
 
@@ -170,4 +194,38 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
         }
     }
 
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
 }

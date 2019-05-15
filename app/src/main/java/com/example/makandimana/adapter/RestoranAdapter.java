@@ -1,5 +1,4 @@
 package com.example.makandimana.adapter;
-
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,15 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.util.ArrayList;
-
 import com.example.makandimana.R;
 import com.example.makandimana.model.*;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 public class RestoranAdapter extends FirebaseRecyclerAdapter<RestoranModel, RestoranAdapter.RestoViewHolder> {
@@ -24,7 +18,6 @@ public class RestoranAdapter extends FirebaseRecyclerAdapter<RestoranModel, Rest
     public RestoranAdapter(@NonNull FirebaseRecyclerOptions<RestoranModel> options) {
         super(options);
     }
-
 
     @Override
     protected void onBindViewHolder(@NonNull RestoViewHolder holder, int position, @NonNull RestoranModel model) {
