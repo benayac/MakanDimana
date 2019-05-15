@@ -6,6 +6,10 @@ public class menuMakananModel {
     private int foodPrice;
     private String imgUrl;
 
+    public menuMakananModel(){
+
+    }
+
     public menuMakananModel(String foodName, int foodPrice, String imgUrl){
         this.foodName = foodName;
         this.foodPrice = foodPrice;

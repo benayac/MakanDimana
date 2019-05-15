@@ -20,7 +20,6 @@ import com.squareup.picasso.Picasso;
 
 public class RestoranAdapter extends FirebaseRecyclerAdapter<RestoranModel, RestoranAdapter.RestoViewHolder> {
 
-    private DatabaseReference db = FirebaseDatabase.getInstance().getReference("restaurant");
     private static OnItemClickListener listener;
     public RestoranAdapter(@NonNull FirebaseRecyclerOptions<RestoranModel> options) {
         super(options);
@@ -29,7 +28,7 @@ public class RestoranAdapter extends FirebaseRecyclerAdapter<RestoranModel, Rest
 
     @Override
     protected void onBindViewHolder(@NonNull RestoViewHolder holder, int position, @NonNull RestoranModel model) {
-        holder.tvAvgPrice.setText(String.valueOf((model.getMaxPrice() + model.getMinPrice())/2));
+        holder.tvAvgPrice.setText("Rp " + model.getMinPrice() + " - Rp " + model.getMaxPrice());
         holder.tvDistance.setText("KM123");
         holder.tvFoodType.setText(String.valueOf(model.getFoodType()));
         holder.tvRestoName.setText(String.valueOf(model.getNamaResto()));

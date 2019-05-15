@@ -42,7 +42,6 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
     private BottomSheetBehavior mBottomSheetBehavior;
     private GoogleMap mMap;
     private TextView mShowMore;
-    private CardView cardView;
     private RecyclerView recyclerView;
     private RestoranAdapter restoranAdapter;
     private DatabaseReference db;
@@ -55,18 +54,9 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
         setContentView(R.layout.activity_map_sheet);
 
         createRestoList();
-        cardView = findViewById(R.id.cvSortJarak);
         mShowMore = findViewById(R.id.tvShowMore);
         View bottomSheet = findViewById(R.id.bottom_sheet);
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-
-        cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MapSheetActivity.this, RestaurantDetailActivity.class);
-                startActivity(intent);
-            }
-        });
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -79,6 +69,9 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onItemClick(View view, int position) {
                 Toast.makeText(MapSheetActivity.this, restoList.get(position), Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(MapSheetActivity.this, RestaurantDetailActivity.class);
+                intent.putExtra("EXTRA_RESTO", restoList.get(position));
+                startActivity(intent);
             }
         });
 
@@ -88,18 +81,6 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        ArrayList<String> RestoName = createRestoNameList();
-        ArrayList<Double> RestoLat = createRestoLatList();
-        ArrayList<Double> RestoLang = createRestoLangList();
-
-        for(int i = 0; i < RestoName.size(); i++){
-            mMap.addMarker(new MarkerOptions().position(new LatLng(RestoLat.get(i), RestoLang.get(i)))
-                    .title(RestoName.get(i)));
-            Log.v("Latitude", String.valueOf(RestoLat.get(i)));
-            Log.v("Langitude", String.valueOf(RestoLang.get(i)));
-            Log.v("Resto Name", String.valueOf(RestoName.get(i)));
-
-        }
         // Add a marker in Sydney and move the camera
         /*LatLng teti = new LatLng(-7.765874, 110.371725);
         LatLng mm = new LatLng(-7.761575, 110.375409);
@@ -187,66 +168,6 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
         if (restoranAdapter != null){
             restoranAdapter.stopListening();
         }
-    }
-
-    public ArrayList<String> createRestoNameList(){
-
-        final ArrayList<String> restosList = new ArrayList<>();
-        db.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                    restosList.add(dataSnapshot1.child("namaResto").getValue(String.class));
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        return restosList;
-    }
-
-    public ArrayList<Double> createRestoLatList(){
-
-        final ArrayList<Double> restosLang = new ArrayList<>();
-        db.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                    restosLang.add(dataSnapshot1.child("langitude").getValue(Double.class));
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        return restosLang;
-    }
-
-    public ArrayList<Double> createRestoLangList(){
-
-        final ArrayList<Double> restosLong = new ArrayList<>();
-        db.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                    restosLong.add(dataSnapshot1.child("longitude").getValue(Double.class));
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        return restosLong;
     }
 
 }

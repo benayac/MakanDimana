@@ -5,12 +5,13 @@ public class RestoranModel {
     private String namaResto, foodType, imgUrl;
     private double langitude, longitude;
     private int minPrice, maxPrice;
+    private String openHr, closeHr;
 
     public RestoranModel(){
 
     }
 
-    public RestoranModel(String namaResto, String foodType, String imgUrl, double langitude, double longitude, int minPrice, int maxPrice) {
+    public RestoranModel(String namaResto, String foodType, String imgUrl, double langitude, double longitude, int minPrice, int maxPrice, String openHr, String closeHr) {
         this.namaResto = namaResto;
         this.imgUrl = imgUrl;
         this.foodType = foodType;
@@ -18,6 +19,8 @@ public class RestoranModel {
         this.longitude = longitude;
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
+        this.openHr = openHr;
+        this.closeHr = closeHr;
 
     }
 
