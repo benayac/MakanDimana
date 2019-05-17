@@ -29,7 +29,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
     private menuMakananAdapter menuAdapter;
     private ArrayList<menuMakananModel> makananArrayList;
     private Query query;
-    private TextView TVrestoName, TVrestoType;
+    private TextView TVrestoName, TVrestoType, TVOpenHour;
     private ImageView imgResto;
     private DatabaseReference db;
     private Intent intent;
@@ -40,6 +40,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_restaurant_detail);
         TVrestoName = findViewById(R.id.tvNamaResto);
         TVrestoType = findViewById(R.id.tvRestoType);
+        TVOpenHour = findViewById(R.id.tvOpenHourBeneran);
         imgResto = findViewById(R.id.restoImageDetail);
         intent = getIntent();
         changeTextView();
@@ -56,7 +57,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         makananArrayList.add(new menuMakananModel("Burjo", 5000, "https://img-global.cpcdn.com/003_recipes/d7e1edd176470715/751x532cq70/bubur-kacang-ijo-burjo-simple-foto-resep-utama.jpg"));
     }*/
 
-    public void setUpRecyclerView(){
+    public void setUpRecyclerView() {
         db = FirebaseDatabase.getInstance().getReference("menuMakanan");
         query = db.child(intent.getStringExtra("EXTRA_RESTO"));
         FirebaseRecyclerOptions<menuMakananModel> options = new FirebaseRecyclerOptions.Builder<menuMakananModel>()
@@ -72,7 +73,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if(menuAdapter != null){
+        if (menuAdapter != null) {
             menuAdapter.startListening();
         }
     }
@@ -80,18 +81,23 @@ public class RestaurantDetailActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if(menuAdapter != null)
+        if (menuAdapter != null)
             menuAdapter.stopListening();
     }
 
-    public void changeTextView(){
+    public void changeTextView() {
         db = FirebaseDatabase.getInstance().getReference("restaurant");
-        db.child(intent.getStringExtra("EXTRA_RESTO")).child("namaResto").addValueEventListener(new ValueEventListener() {
+        db.child(intent.getStringExtra("EXTRA_RESTO")).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String restoName = dataSnapshot.getValue(String.class);
+                String restoName = dataSnapshot.child("namaResto").getValue(String.class);
+                String restoType = dataSnapshot.child("foodType").getValue(String.class);
+                String openHour = dataSnapshot.child("openHr").getValue(String.class);
+                String closeHour = dataSnapshot.child("closeHr").getValue(String.class);
                 Log.v("namaResto", restoName);
                 TVrestoName.setText(restoName);
+                TVrestoType.setText(restoType);
+                TVOpenHour.setText(openHour + "-" + closeHour);
             }
 
             @Override
@@ -100,7 +106,8 @@ public class RestaurantDetailActivity extends AppCompatActivity {
             }
         });
 
-        db.child(intent.getStringExtra("EXTRA_RESTO")).child("foodType").addValueEventListener(new ValueEventListener() {
+
+        /*db.child(intent.getStringExtra("EXTRA_RESTO")).child("foodType").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String restoType = dataSnapshot.getValue(String.class);
@@ -112,7 +119,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        });*/
 
         db.child(intent.getStringExtra("EXTRA_RESTO")).child("imgUrl").addValueEventListener(new ValueEventListener() {
             @Override
