@@ -1,4 +1,5 @@
 package com.example.makandimana.adapter;
+import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.makandimana.MapSheetActivity;
 import com.example.makandimana.R;
 import com.example.makandimana.model.*;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -21,13 +24,32 @@ public class RestoranAdapter extends FirebaseRecyclerAdapter<RestoranModel, Rest
 
     @Override
     protected void onBindViewHolder(@NonNull RestoViewHolder holder, int position, @NonNull RestoranModel model) {
-        holder.tvAvgPrice.setText("Rp " + model.getMinPrice() + " - Rp " + model.getMaxPrice());
-        holder.tvDistance.setText("KM123");
-        holder.tvFoodType.setText(String.valueOf(model.getFoodType()));
-        holder.tvRestoName.setText(String.valueOf(model.getNamaResto()));
+        Location loc = new Location("");
+        loc.setLatitude(model.getLangitude());
+        loc.setLongitude(model.getLongitude());
+        Location loc2 = new Location("");
+        loc2.setLatitude(MapSheetActivity.locations.getLatitude());
+        loc2.setLongitude(MapSheetActivity.locations.getLongitude());
+        int distance = Math.round(loc.distanceTo(loc2));
 
-        String imgUrl = model.getImgUrl();
-        Picasso.get().load(imgUrl).resize(150, 150).centerInside().into(holder.imgResto);
+        if(MapSheetActivity.myBudget > model.getMinPrice()){
+            holder.tvAvgPrice.setText("Rp " + model.getMinPrice() + " - Rp " + model.getMaxPrice());
+            holder.tvFoodType.setText(String.valueOf(model.getFoodType()));
+            holder.tvRestoName.setText(String.valueOf(model.getNamaResto()));
+            if(distance >= 1000){
+                holder.tvDistance.setText(distance / 1000 + "km");
+            } else {
+                holder.tvDistance.setText(distance + "m");
+            }
+
+            String imgUrl = model.getImgUrl();
+            Picasso.get().load(imgUrl).resize(150, 150).centerInside().into(holder.imgResto);
+
+        } else{
+            holder.itemView.setVisibility(View.GONE);
+            holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
+        }
+
     }
 
     @NonNull
