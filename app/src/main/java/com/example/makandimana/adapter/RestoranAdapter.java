@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.makandimana.MapSheetActivity;
 import com.example.makandimana.R;
@@ -32,7 +33,7 @@ public class RestoranAdapter extends FirebaseRecyclerAdapter<RestoranModel, Rest
         loc2.setLongitude(MapSheetActivity.locations.getLongitude());
         int distance = Math.round(loc.distanceTo(loc2));
 
-        if(MapSheetActivity.myBudget > model.getMinPrice()){
+        if(MapSheetActivity.myBudget >= model.getMinPrice() && model.getFoodType().equals(MapSheetActivity.myMenu)){
             holder.tvAvgPrice.setText("Rp " + model.getMinPrice() + " - Rp " + model.getMaxPrice());
             holder.tvFoodType.setText(String.valueOf(model.getFoodType()));
             holder.tvRestoName.setText(String.valueOf(model.getNamaResto()));

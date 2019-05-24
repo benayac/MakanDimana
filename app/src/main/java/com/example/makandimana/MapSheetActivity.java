@@ -49,6 +49,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.example.*;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -62,7 +63,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener {
 
     private static final int REQUEST_CODE = 101;
     private BottomSheetBehavior mBottomSheetBehavior;
@@ -74,14 +75,27 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
     private FusedLocationProviderClient client;
     public static Location locations;
     public static int myBudget;
+    public static String myMenu;
+    private String sortMethod;
+    public RecyclerView recyclerView;
+    public RecyclerView.LayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_sheet);
 
+        recyclerView = findViewById(R.id.recylcerviewRestoran);
+        layoutManager = new LinearLayoutManager(MapSheetActivity.this);
+
         Intent intent = getIntent();
         myBudget = Integer.valueOf(intent.getStringExtra("EXTRA_BUDGET"));
+        myMenu = intent.getStringExtra("EXTRA_SPINNER");
+
+        CardView cvSortJarak = findViewById(R.id.cvSortJarak);
+        CardView cvSortHarga = findViewById(R.id.cvSortHarga);
+        cvSortJarak.setOnClickListener(this);
+        cvSortHarga.setOnClickListener(this);
 
         client = LocationServices.getFusedLocationProviderClient(this);
         fetchLastLocation();
@@ -117,6 +131,8 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                             .findFragmentById(R.id.map);
                     mapFragment.getMapAsync(MapSheetActivity.this);
+                } else {
+                    Toast.makeText(MapSheetActivity.this, "Kamu lagi dimana sih? :(", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -141,7 +157,8 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Iterable<DataSnapshot> restos = dataSnapshot.getChildren();
                 for (DataSnapshot resto : restos) {
-                    if (myBudget >= dataSnapshot.child(resto.getKey()).child("minPrice").getValue(Integer.class)) {
+                    if (myBudget >= dataSnapshot.child(resto.getKey()).child("minPrice").getValue(Integer.class)
+                            && myMenu.equals(dataSnapshot.child(resto.getKey()).child("foodType").getValue(String.class))) {
                         Double lang = dataSnapshot.child(resto.getKey()).child("langitude").getValue(Double.class);
                         Double lot = dataSnapshot.child(resto.getKey()).child("longitude").getValue(Double.class);
                         mMap.addMarker(new MarkerOptions()
@@ -203,14 +220,13 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
 
     public void setUpRecyclerView() {
         Query query = FirebaseDatabase.getInstance().getReference("restaurant");
+        //query = FirebaseDatabase.getInstance().getReference("restaurant").orderByChild("minPrice");
         FirebaseRecyclerOptions<RestoranModel> options = new FirebaseRecyclerOptions.Builder<RestoranModel>()
                 .setQuery(query, RestoranModel.class)
                 .build();
 
-        RecyclerView recyclerView = findViewById(R.id.recylcerviewRestoran);
         restoranAdapter = new RestoranAdapter(options);
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MapSheetActivity.this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(restoranAdapter);
     }
@@ -243,7 +259,39 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
                     Toast.makeText(MapSheetActivity.this,
                             "Kamu lagi dimana sih? :(", Toast.LENGTH_SHORT).show();
                 }
-                return;
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        Query query;
+        FirebaseRecyclerOptions<RestoranModel> options;
+        switch (v.getId()) {
+            case R.id.cvSortHarga:
+                sortMethod = "minPrice";
+                query = FirebaseDatabase.getInstance().getReference("restaurant").orderByChild(sortMethod);
+                options = new FirebaseRecyclerOptions.Builder<RestoranModel>()
+                    .setQuery(query, RestoranModel.class)
+                    .build();
+
+                restoranAdapter = new RestoranAdapter(options);
+                restoranAdapter.startListening();
+                recyclerView.setAdapter(restoranAdapter);
+                Toast.makeText(MapSheetActivity.this, "Sorted by Price", Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.cvSortJarak:
+                sortMethod = "langitude";
+                query = FirebaseDatabase.getInstance().getReference("restaurant").orderByChild(sortMethod);
+                options = new FirebaseRecyclerOptions.Builder<RestoranModel>()
+                    .setQuery(query, RestoranModel.class)
+                    .build();
+
+                restoranAdapter = new RestoranAdapter(options);
+                restoranAdapter.startListening();
+                recyclerView.setAdapter(restoranAdapter);
+                Toast.makeText(MapSheetActivity.this, "Sorted by Range", Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 }

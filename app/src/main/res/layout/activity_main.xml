@@ -67,7 +67,6 @@
                     android:layout_below="@id/etDuit"
                     android:layout_marginHorizontal="80dp"
                     android:layout_marginTop="18dp"
-                    android:entries="@array/menu_arrays"
                     android:prompt="@string/menu_prompt" />
 
                 <Button
