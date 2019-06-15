@@ -1,20 +1,14 @@
 package com.example.makandimana;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
-import android.location.LocationListener;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,31 +21,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.makandimana.adapter.RestoranAdapter;
-import com.example.makandimana.adapter.menuMakananAdapter;
 import com.example.makandimana.model.RestoranModel;
-import com.example.makandimana.model.menuMakananModel;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import com.example.*;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -61,22 +46,25 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener, GoogleMap.OnInfoWindowClickListener {
 
-public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener {
+    /*
+        MapSheetActivity merupakan activity utama dimana user dapat mencari restoran melalui
+        list dan marker pada map.
+     */
 
     private static final int REQUEST_CODE = 101;
     private BottomSheetBehavior mBottomSheetBehavior;
     private GoogleMap mMap;
-    private TextView mShowMore;
     private RestoranAdapter restoranAdapter;
     private DatabaseReference db;
     private List<String> restoList;
+    private List<String> restoListMarker;
+    private List<String> restoTitleList;
     private FusedLocationProviderClient client;
     public static Location locations;
     public static int myBudget;
     public static String myMenu;
-    private String sortMethod;
     public RecyclerView recyclerView;
     public RecyclerView.LayoutManager layoutManager;
 
@@ -85,30 +73,29 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_sheet);
 
-        recyclerView = findViewById(R.id.recylcerviewRestoran);
-        layoutManager = new LinearLayoutManager(MapSheetActivity.this);
-
         Intent intent = getIntent();
         myBudget = Integer.valueOf(intent.getStringExtra("EXTRA_BUDGET"));
         myMenu = intent.getStringExtra("EXTRA_SPINNER");
 
         CardView cvSortJarak = findViewById(R.id.cvSortJarak);
         CardView cvSortHarga = findViewById(R.id.cvSortHarga);
+        CardView cvChooseMenu = findViewById(R.id.cvChooseMenu);
         cvSortJarak.setOnClickListener(this);
         cvSortHarga.setOnClickListener(this);
+        cvChooseMenu.setOnClickListener(this);
 
         client = LocationServices.getFusedLocationProviderClient(this);
         fetchLastLocation();
         createRestoList();
-        mShowMore = findViewById(R.id.tvShowMore);
+
         View bottomSheet = findViewById(R.id.bottom_sheet);
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-        bottomSheetCallback();
+
         setUpRecyclerView();
+
         restoranAdapter.setOnItemClickListener(new RestoranAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Toast.makeText(MapSheetActivity.this, restoList.get(position), Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(MapSheetActivity.this, RestaurantDetailActivity.class);
                 intent.putExtra("EXTRA_RESTO", restoList.get(position));
                 startActivity(intent);
@@ -116,6 +103,10 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
         });
     }
 
+    /*
+        berikut merupakan method fetchLastLocation yang mengimplementasikan konsep enkapsulasi
+        method ini digunakan untuk meminta user mengaktifkan GPS lalu mendapatkan lokasi user saat itu
+     */
     private void fetchLastLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]
@@ -124,6 +115,7 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
         }
         Task<Location> task = client.getLastLocation();
         task.addOnSuccessListener(new OnSuccessListener<Location>() {
+            //implementasi dari konsep polimorfise
             @Override
             public void onSuccess(Location location) {
                 if (location != null) {
@@ -138,27 +130,36 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
         });
     }
 
+    /*
+        implementasi polimorfisme, method ini akan membuat marker sesuai jumlah restoran
+        dan dijalankan sebelum map dimunculkan
+    */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        googleMap.setOnInfoWindowClickListener(this);
+
         LatLng latlng = new LatLng(locations.getLatitude(), locations.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions()
                 .position(latlng)
                 .title("My Location");
-        //markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable));
+        BitmapDrawable bitmapDrawable = (BitmapDrawable) getResources().getDrawable(R.drawable.marker);
+        Bitmap b = bitmapDrawable.getBitmap();
+        Bitmap smallMarker = Bitmap.createScaledBitmap(b, 50, 50, false);
+        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
 
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latlng));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 15));
         mMap.addMarker(markerOptions);
 
         db = FirebaseDatabase.getInstance().getReference("restaurant");
-        db.addValueEventListener(new ValueEventListener() {
+        db.orderByChild("minPrice").endAt(myBudget).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Iterable<DataSnapshot> restos = dataSnapshot.getChildren();
                 for (DataSnapshot resto : restos) {
-                    if (myBudget >= dataSnapshot.child(resto.getKey()).child("minPrice").getValue(Integer.class)
-                            && myMenu.equals(dataSnapshot.child(resto.getKey()).child("foodType").getValue(String.class))) {
+                    if (myMenu.equals(dataSnapshot.child(resto.getKey()).child("foodType").getValue(String.class))) {
                         Double lang = dataSnapshot.child(resto.getKey()).child("langitude").getValue(Double.class);
                         Double lot = dataSnapshot.child(resto.getKey()).child("longitude").getValue(Double.class);
                         mMap.addMarker(new MarkerOptions()
@@ -175,9 +176,37 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
         });
     }
 
+    //method untuk membuat list berisi daftar restoran dari database, menerapkan prinsip enkapsulasi
     public void createRestoList() {
         db = FirebaseDatabase.getInstance().getReference("restaurant");
-        db.addValueEventListener(new ValueEventListener() {
+        db.orderByChild("minPrice").endAt(myBudget).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot> restos = dataSnapshot.getChildren();
+                restoList = new ArrayList<>();
+                restoTitleList = new ArrayList<>();
+                restoListMarker = new ArrayList<>();
+                for (DataSnapshot resto : restos) {
+                    restoList.add(resto.getKey());
+                    restoTitleList.add(resto.child("namaResto").getValue(String.class));
+                    restoListMarker.add(resto.getKey());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    /*
+        method untuk membuat list berisi daftar restoran yang sudah diurutkan dari database,
+        menerapkan prinsip enkapsulasi
+     */
+    public void createSortedRestoList(String sortMethod) {
+        db = FirebaseDatabase.getInstance().getReference("restaurant");
+        db.orderByChild(sortMethod).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Iterable<DataSnapshot> restos = dataSnapshot.getChildren();
@@ -192,41 +221,23 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
 
             }
         });
+
     }
 
-    public void bottomSheetCallback() {
-        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View view, int i) {
-                switch (i) {
-                    case BottomSheetBehavior.STATE_EXPANDED:
-                        mShowMore.setText("");
-                        break;
-                    case BottomSheetBehavior.STATE_DRAGGING:
-                        mShowMore.setText("");
-                        break;
-                    case BottomSheetBehavior.STATE_COLLAPSED:
-                        mShowMore.setText("Tampilkan Daftar");
-                        break;
-                }
-            }
-
-            @Override
-            public void onSlide(@NonNull View view, float v) {
-
-            }
-        });
-    }
-
+    /*
+        method setUpRecylerView digunakan untuk menyiapkan recyclerView
+        merupakan implementasi dari konsep enkapsulasi
+     */
     public void setUpRecyclerView() {
-        Query query = FirebaseDatabase.getInstance().getReference("restaurant");
-        //query = FirebaseDatabase.getInstance().getReference("restaurant").orderByChild("minPrice");
+        Query query = FirebaseDatabase.getInstance().getReference("restaurant").orderByChild("minPrice").endAt(myBudget);
         FirebaseRecyclerOptions<RestoranModel> options = new FirebaseRecyclerOptions.Builder<RestoranModel>()
                 .setQuery(query, RestoranModel.class)
                 .build();
 
         restoranAdapter = new RestoranAdapter(options);
 
+        recyclerView = findViewById(R.id.recylcerviewRestoran);
+        layoutManager = new LinearLayoutManager(MapSheetActivity.this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(restoranAdapter);
     }
@@ -262,36 +273,60 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
         }
     }
 
+    //method onClick ini merupakan implementasi dari interface View.OnClickListener, sehingga menerapkan konsep polimorfisme
     @Override
     public void onClick(View v) {
         Query query;
         FirebaseRecyclerOptions<RestoranModel> options;
         switch (v.getId()) {
             case R.id.cvSortHarga:
-                sortMethod = "minPrice";
+                String sortMethod = "minPrice";
                 query = FirebaseDatabase.getInstance().getReference("restaurant").orderByChild(sortMethod);
                 options = new FirebaseRecyclerOptions.Builder<RestoranModel>()
-                    .setQuery(query, RestoranModel.class)
-                    .build();
+                        .setQuery(query, RestoranModel.class)
+                        .build();
 
                 restoranAdapter = new RestoranAdapter(options);
                 restoranAdapter.startListening();
                 recyclerView.setAdapter(restoranAdapter);
                 Toast.makeText(MapSheetActivity.this, "Sorted by Price", Toast.LENGTH_SHORT).show();
+                createSortedRestoList(sortMethod);
                 break;
 
             case R.id.cvSortJarak:
                 sortMethod = "langitude";
                 query = FirebaseDatabase.getInstance().getReference("restaurant").orderByChild(sortMethod);
                 options = new FirebaseRecyclerOptions.Builder<RestoranModel>()
-                    .setQuery(query, RestoranModel.class)
-                    .build();
+                        .setQuery(query, RestoranModel.class)
+                        .build();
 
                 restoranAdapter = new RestoranAdapter(options);
                 restoranAdapter.startListening();
                 recyclerView.setAdapter(restoranAdapter);
                 Toast.makeText(MapSheetActivity.this, "Sorted by Range", Toast.LENGTH_SHORT).show();
+                createSortedRestoList(sortMethod);
                 break;
+
+            case R.id.cvChooseMenu:
+                finish();
+                break;
+        }
+    }
+
+    /*
+        method onInfoWindowClick ini merupakan implementasi dari interface GoogleMap.OnInfoWindowClickListener
+        method ini digunakan untuk membuka menu restoran yang diklik markernya
+     */
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        try {
+            int index = restoTitleList.indexOf(marker.getTitle());
+            Intent intent = new Intent(this, RestaurantDetailActivity.class);
+            intent.putExtra("EXTRA_RESTO", restoListMarker.get(index));
+            startActivity(intent);
+
+        } catch (Exception e) {
+            Toast.makeText(this, "Ini Lokasimu sekarang!", Toast.LENGTH_SHORT).show();
         }
     }
 }

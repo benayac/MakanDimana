@@ -1,4 +1,5 @@
 package com.example.makandimana.adapter;
+
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -7,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.makandimana.MapSheetActivity;
 import com.example.makandimana.R;
@@ -18,7 +18,14 @@ import com.squareup.picasso.Picasso;
 
 public class RestoranAdapter extends FirebaseRecyclerAdapter<RestoranModel, RestoranAdapter.RestoViewHolder> {
 
+    /*
+        RestoranAdapter merupakan class adapter yang menghubungkan antara RecyclerView pada aplikasi
+        yang berisi list restoran, dengan data-data yang ada pada database.
+        Class ini berisi berbagai macam method yang menerapkan konsep polimorfisme.
+     */
+
     private static OnItemClickListener listener;
+
     public RestoranAdapter(@NonNull FirebaseRecyclerOptions<RestoranModel> options) {
         super(options);
     }
@@ -33,11 +40,12 @@ public class RestoranAdapter extends FirebaseRecyclerAdapter<RestoranModel, Rest
         loc2.setLongitude(MapSheetActivity.locations.getLongitude());
         int distance = Math.round(loc.distanceTo(loc2));
 
-        if(MapSheetActivity.myBudget >= model.getMinPrice() && model.getFoodType().equals(MapSheetActivity.myMenu)){
+        if (model.getFoodType().equals(MapSheetActivity.myMenu)) {
+
             holder.tvAvgPrice.setText("Rp " + model.getMinPrice() + " - Rp " + model.getMaxPrice());
             holder.tvFoodType.setText(String.valueOf(model.getFoodType()));
             holder.tvRestoName.setText(String.valueOf(model.getNamaResto()));
-            if(distance >= 1000){
+            if (distance >= 1000) {
                 holder.tvDistance.setText(distance / 1000 + "km");
             } else {
                 holder.tvDistance.setText(distance + "m");
@@ -45,8 +53,7 @@ public class RestoranAdapter extends FirebaseRecyclerAdapter<RestoranModel, Rest
 
             String imgUrl = model.getImgUrl();
             Picasso.get().load(imgUrl).resize(150, 150).centerInside().into(holder.imgResto);
-
-        } else{
+        } else {
             holder.itemView.setVisibility(View.GONE);
             holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
         }
@@ -61,7 +68,7 @@ public class RestoranAdapter extends FirebaseRecyclerAdapter<RestoranModel, Rest
         return new RestoViewHolder(v);
     }
 
-    public static class RestoViewHolder extends RecyclerView.ViewHolder{
+    public static class RestoViewHolder extends RecyclerView.ViewHolder {
 
         private TextView tvRestoName, tvFoodType, tvAvgPrice, tvDistance;
         private ImageView imgResto;
@@ -79,7 +86,7 @@ public class RestoranAdapter extends FirebaseRecyclerAdapter<RestoranModel, Rest
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
-                    if(listener != null){
+                    if (listener != null) {
                         listener.onItemClick(v, position);
                     }
                 }
@@ -87,11 +94,11 @@ public class RestoranAdapter extends FirebaseRecyclerAdapter<RestoranModel, Rest
         }
     }
 
-    public interface OnItemClickListener{
-        void onItemClick(View view , int position);
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener){
+    public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
 

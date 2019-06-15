@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RestaurantDetailActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".RestaurantDetailActivity">
 
     <ImageView
         android:id="@+id/restoImageDetail"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:src="@drawable/mmimage"/>
+        android:src="@drawable/mmimage" />
 
 
     <android.support.v7.widget.CardView
@@ -21,20 +21,31 @@
         app:cardCornerRadius="10dp"
         app:cardElevation="6dp">
 
+        <ImageView
+            android:id="@+id/btnGMap"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="20dp"
+            android:layout_toRightOf="@id/tvNamaResto"
+            android:src="@drawable/googlemap" />
+
+
         <RelativeLayout
             android:id="@+id/restaurantDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
             <TextView
-                android:fontFamily="@font/robotomedium"
-                android:textColor="#000"
                 android:id="@+id/tvNamaResto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/robotomedium"
                 android:paddingStart="16dp"
                 android:paddingTop="16dp"
                 android:text="Nama Burjo"
+                android:textColor="#000"
                 android:textSize="32dp" />
 
             <TextView
@@ -75,11 +86,12 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recylcerviewMenu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:listitem="@layout/list_makanan_card" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recylcerviewMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/list_makanan_card" />
 
     </ScrollView>
 </LinearLayout>

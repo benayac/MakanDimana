@@ -2,12 +2,14 @@ package com.example.makandimana.model;
 
 public class RestoranModel {
 
+    //berikut merupakan class model yang berisi property tiap restoran
+
     private String namaResto, foodType, imgUrl;
     private double langitude, longitude;
     private int minPrice, maxPrice;
     private String openHr, closeHr;
 
-    public RestoranModel(){
+    public RestoranModel() {
 
     }
 
@@ -44,7 +46,12 @@ public class RestoranModel {
         return maxPrice;
     }
 
-    public String getImgUrl() { return imgUrl; }
+    public String getImgUrl() {
+        return imgUrl;
+    }
 
-    public String getFoodType(){return foodType; }
+    public String getFoodType() {
+        return foodType;
+    }
+
 }

@@ -20,24 +20,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#ffff"
-        app:behavior_hideable="true"
-        app:behavior_peekHeight="55dp"
+        app:behavior_hideable="false"
+        app:behavior_peekHeight="300dp"
         app:layout_behavior="@string/bottom_sheet_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:background="#EEEEEE">
+            android:background="#EEEEEE"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tvShowMore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/robotobold"
                 android:padding="16dp"
-                android:textSize="18sp"
                 android:text="Tampilkan Daftar"
-                android:fontFamily="@font/robotobold"/>
+                android:textSize="18sp" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recylcerviewRestoran"
@@ -49,107 +49,74 @@
 
     </android.support.v4.widget.NestedScrollView>
 
-    <HorizontalScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="none">
+        android:layout_height="60dp"
+        android:background="#EEEEEE"
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="#EEEEEE"
-            android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/robotomedium"
+            android:text="Urutkan"
+            android:textColor="#000"
+            android:textSize="16dp" />
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cvSortJarak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="25dp"
+            android:clickable="true"
+            app:cardBackgroundColor="#E0E0E0"
+            app:cardCornerRadius="14dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/robotomedium"
-                android:textColor="#000"
-                android:text="Urutkan"
-                android:layout_gravity="center"
-                android:layout_marginStart="10dp"
-                android:textSize="16dp"/>
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
+                android:text="Jarak" />
+        </android.support.v7.widget.CardView>
 
-            <android.support.v7.widget.CardView
-                android:id="@+id/cvSortJarak"
-                android:clickable="true"
+        <android.support.v7.widget.CardView
+            android:id="@+id/cvSortHarga"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="15dp"
+            app:cardBackgroundColor="#E0E0E0"
+            app:cardCornerRadius="14dp">
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="25dp"
-                app:cardCornerRadius="14dp"
-                app:cardBackgroundColor="#E0E0E0">
-                <TextView
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="6dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Jarak"/>
-            </android.support.v7.widget.CardView>
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
+                android:text="Harga" />
+        </android.support.v7.widget.CardView>
 
-            <android.support.v7.widget.CardView
-                android:id="@+id/cvSortHarga"
+        <android.support.v7.widget.CardView
+            android:id="@+id/cvChooseMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="15dp"
+            app:cardBackgroundColor="#E0E0E0"
+            app:cardCornerRadius="14dp">
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="15dp"
-                app:cardCornerRadius="14dp"
-                app:cardBackgroundColor="#E0E0E0">
-                <TextView
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="6dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Harga"/>
-            </android.support.v7.widget.CardView>
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
+                android:text="Menu Lain" />
+        </android.support.v7.widget.CardView>
 
-            <android.support.v7.widget.CardView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="15dp"
-                app:cardCornerRadius="14dp"
-                app:cardBackgroundColor="#E0E0E0">
-                <TextView
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="6dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Menu"/>
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="15dp"
-                app:cardCornerRadius="14dp"
-                app:cardBackgroundColor="#E0E0E0">
-                <TextView
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="6dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Sedang Buka"/>
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="15dp"
-                app:cardCornerRadius="14dp"
-                app:cardBackgroundColor="#E0E0E0">
-                <TextView
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="6dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Terlaris"/>
-            </android.support.v7.widget.CardView>
-
-        </LinearLayout>
-
-    </HorizontalScrollView>
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

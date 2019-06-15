@@ -1,16 +1,18 @@
 package com.example.makandimana.model;
 
-public class menuMakananModel {
+public class MenuMakananModel {
+
+    //berikut merupakan class model yang berisi property tiap menu makanan
 
     private String foodName;
     private int foodPrice;
     private String imgUrl;
 
-    public menuMakananModel(){
+    public MenuMakananModel(){
 
     }
 
-    public menuMakananModel(String foodName, int foodPrice, String imgUrl){
+    public MenuMakananModel(String foodName, int foodPrice, String imgUrl){
         this.foodName = foodName;
         this.foodPrice = foodPrice;
         this.imgUrl = imgUrl;

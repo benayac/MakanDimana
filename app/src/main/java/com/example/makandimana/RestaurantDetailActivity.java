@@ -1,12 +1,14 @@
 package com.example.makandimana;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,18 +23,17 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-
 public class RestaurantDetailActivity extends AppCompatActivity {
 
+    //RestaurantDetailActivity merupakan activity yang menampilkan list menu makanan tiap restoran
     private RecyclerView recyclerView;
-    private menuMakananAdapter menuAdapter;
-    private ArrayList<menuMakananModel> makananArrayList;
+    private MenuMakananAdapter menuAdapter;
     private Query query;
     private TextView TVrestoName, TVrestoType, TVOpenHour;
-    private ImageView imgResto;
+    private ImageView imgResto, imgGMap;
     private DatabaseReference db;
     private Intent intent;
+    private String uri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,29 +43,35 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         TVrestoType = findViewById(R.id.tvRestoType);
         TVOpenHour = findViewById(R.id.tvOpenHourBeneran);
         imgResto = findViewById(R.id.restoImageDetail);
+        imgGMap = findViewById(R.id.btnGMap);
         intent = getIntent();
         changeTextView();
         setUpRecyclerView();
+        getLatLong();
+
+        //berikut adalah implementasi dari interface onClickListener,
+        //digunakan untuk membuka google map yang mengarahkan lokasi restoran yang diklik
+        imgGMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri gmmIntentUri = Uri.parse(uri);
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                startActivity(mapIntent);
+            }
+        });
 
     }
 
-    /*public void addData(){
-        makananArrayList = new ArrayList<>();
-        makananArrayList.add(new menuMakananModel("Magelangan", 10000, "https://img-global.cpcdn.com/003_recipes/b0ff1cd295d6186a/751x532cq70/magelangan-ala-burjo-foto-resep-utama.jpg"));
-        makananArrayList.add(new menuMakananModel("Orak Arik", 11000, "https://scontent-atl3-1.cdninstagram.com/vp/32a5ce6b391ac67122efc7ce47385c29/5D4A7113/t51.2885-15/e35/38868662_1676598872467442_6570355851758927872_n.jpg?_nc_ht=scontent-atl3-1.cdninstagram.com"));
-        makananArrayList.add(new menuMakananModel("Nasi Telor", 9000, "https://cdn-image.hipwee.com/wp-content/uploads/2016/11/hipwee-3DRP8T34BF50808D11229Cmx.jpg"));
-        makananArrayList.add(new menuMakananModel("Omelet", 10000, "https://3.bp.blogspot.com/-V-uZ3N1gxVI/V4591zp2C8I/AAAAAAAAAW0/mJOQHysrUqoCs9Nkf3TN4KXcOHIlC4J0ACLcB/s1600/P_20160719_115004_HDR.jpg"));
-        makananArrayList.add(new menuMakananModel("Burjo", 5000, "https://img-global.cpcdn.com/003_recipes/d7e1edd176470715/751x532cq70/bubur-kacang-ijo-burjo-simple-foto-resep-utama.jpg"));
-    }*/
-
+    //method ini digunakan untuk menyiapkan recyclerView
     public void setUpRecyclerView() {
         db = FirebaseDatabase.getInstance().getReference("menuMakanan");
         query = db.child(intent.getStringExtra("EXTRA_RESTO"));
-        FirebaseRecyclerOptions<menuMakananModel> options = new FirebaseRecyclerOptions.Builder<menuMakananModel>()
-                .setQuery(query, menuMakananModel.class)
+        FirebaseRecyclerOptions<MenuMakananModel> options = new FirebaseRecyclerOptions.Builder<MenuMakananModel>()
+                .setQuery(query, MenuMakananModel.class)
                 .build();
         recyclerView = findViewById(R.id.recylcerviewMenu);
-        menuAdapter = new menuMakananAdapter(options);
+        menuAdapter = new MenuMakananAdapter(options);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(RestaurantDetailActivity.this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(menuAdapter);
@@ -85,6 +92,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
             menuAdapter.stopListening();
     }
 
+    //method ini digunakan untuk mengambil data pada database kemudian menampilkannya pada TextView
     public void changeTextView() {
         db = FirebaseDatabase.getInstance().getReference("restaurant");
         db.child(intent.getStringExtra("EXTRA_RESTO")).addValueEventListener(new ValueEventListener() {
@@ -106,26 +114,37 @@ public class RestaurantDetailActivity extends AppCompatActivity {
             }
         });
 
-
-        /*db.child(intent.getStringExtra("EXTRA_RESTO")).child("foodType").addValueEventListener(new ValueEventListener() {
+        db.child(intent.getStringExtra("EXTRA_RESTO")).child("imgUrl").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String restoType = dataSnapshot.getValue(String.class);
-                Log.v("restoType", restoType);
-                TVrestoType.setText(restoType);
+                String imgUrl = dataSnapshot.getValue(String.class);
+                Picasso.get().load(imgUrl).resize(150, 150).centerInside().into(imgResto);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });*/
+        });
+    }
 
-        db.child(intent.getStringExtra("EXTRA_RESTO")).child("imgUrl").addValueEventListener(new ValueEventListener() {
+    //method ini digunakan untuk mengambil koordinat tiap restoran dari database
+    public void getLatLong(){
+        db = FirebaseDatabase.getInstance().getReference("restaurant");
+        db.child(intent.getStringExtra("EXTRA_RESTO")).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String imgUrl = dataSnapshot.getValue(String.class);
-                Picasso.get().load(imgUrl).resize(150, 150).centerInside().into(imgResto);
+                String uriBegin = "geo:" + dataSnapshot.child("langitude").getValue(Double.class)
+                        + ","
+                        + dataSnapshot.child("longitude").getValue(Double.class);
+                String query = dataSnapshot.child("langitude").getValue(Double.class)
+                        + ","
+                        + dataSnapshot.child("longitude").getValue(Double.class)
+                        + "("
+                        + dataSnapshot.child("namaResto").getValue(String.class)
+                        + ")";
+                String encodedQuery = Uri.encode(query);
+                uri = uriBegin + "?q=" + encodedQuery + "&z=16";
             }
 
             @Override

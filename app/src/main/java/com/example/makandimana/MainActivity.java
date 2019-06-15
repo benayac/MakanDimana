@@ -1,3 +1,5 @@
+
+
 package com.example.makandimana;
 
 import android.content.Intent;
@@ -8,15 +10,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
-import com.example.makandimana.model.RestoranModel;
-import com.example.makandimana.model.menuMakananModel;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
-import java.util.List;
+//berikut merupakan class MainActivity, dimana user menginput budget dan pilihan menu.
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         String[] menuArray = getResources().getStringArray(R.array.menu_arrays);
-        ArrayAdapter<String>arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, menuArray);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, menuArray);
         final Spinner spinner = findViewById(R.id.spinnerJenismKanan);
         spinner.setAdapter(arrayAdapter);
 
@@ -37,14 +35,20 @@ public class MainActivity extends AppCompatActivity {
         Button btnCari = findViewById(R.id.btnCari);
         databaseReference = FirebaseDatabase.getInstance().getReference("menuMakanan");
 
+        /*
+        method onClick yang akan membuka activity MapSheetActivity dan mengirimkan data
+        yang berasal dari editText dan pilihan menu yang berasal dari spinner.
+        Hal ini menerapkan pilar PBO yaitu polimorfisme.
+        */
+
         btnCari.setOnClickListener(new View.OnClickListener() {
+            //implementasi dari polimorfisme
             @Override
             public void onClick(View v) {
                 String text = spinner.getSelectedItem().toString();
                 Intent intent = new Intent(MainActivity.this, MapSheetActivity.class);
                 intent.putExtra("EXTRA_SPINNER", text);
                 intent.putExtra("EXTRA_BUDGET", etBudget.getText().toString());
-                Toast.makeText(MainActivity.this, "Menu = " + text, Toast.LENGTH_SHORT).show();
                 startActivity(intent);
 
             }
