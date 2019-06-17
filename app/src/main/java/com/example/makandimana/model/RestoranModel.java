@@ -3,16 +3,18 @@ package com.example.makandimana.model;
 public class RestoranModel {
 
     //berikut merupakan class model yang berisi property tiap restoran
-
     private String namaResto, foodType, imgUrl;
     private double langitude, longitude;
     private int minPrice, maxPrice;
     private String openHr, closeHr;
 
+    //Constructor kosong dari RestoramModel
+    //Dibuat constructor kosong karena Firebase memerlukan constructor kosong
     public RestoranModel() {
 
     }
 
+    //Constructor dengan parameter property RestoranModel
     public RestoranModel(String namaResto, String foodType, String imgUrl, double langitude, double longitude, int minPrice, int maxPrice, String openHr, String closeHr) {
         this.namaResto = namaResto;
         this.imgUrl = imgUrl;

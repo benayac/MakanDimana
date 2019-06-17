@@ -8,10 +8,13 @@ public class MenuMakananModel {
     private int foodPrice;
     private String imgUrl;
 
+    //Constructor kosong dari MenuMakananModel
+    //Dibuat constructor kosong karena Firebase memerlukan constructor kosong
     public MenuMakananModel(){
 
     }
 
+    //Constructor dengan parameter property RestoranModel
     public MenuMakananModel(String foodName, int foodPrice, String imgUrl){
         this.foodName = foodName;
         this.foodPrice = foodPrice;

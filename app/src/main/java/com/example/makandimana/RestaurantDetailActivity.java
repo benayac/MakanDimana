@@ -25,7 +25,8 @@ import com.squareup.picasso.Picasso;
 
 public class RestaurantDetailActivity extends AppCompatActivity {
 
-    //RestaurantDetailActivity merupakan activity yang menampilkan list menu makanan tiap restoran
+    //RestaurantDetailActivity merupakan activity yang menampilkan detail restoran
+    //Detail restoran berupa nama restoran, gambar, jam buka, dan list menu makanan
     private RecyclerView recyclerView;
     private MenuMakananAdapter menuAdapter;
     private Query query;
@@ -39,12 +40,18 @@ public class RestaurantDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_detail);
+
+        //Menghubungkan xml dengan backend
         TVrestoName = findViewById(R.id.tvNamaResto);
         TVrestoType = findViewById(R.id.tvRestoType);
         TVOpenHour = findViewById(R.id.tvOpenHourBeneran);
         imgResto = findViewById(R.id.restoImageDetail);
         imgGMap = findViewById(R.id.btnGMap);
+
+        //Mengambil intent
         intent = getIntent();
+
+        //Memanggil method untuk mengubah tulisan, membangkitkan recycerview dan mengambil koordinat restoran dari database
         changeTextView();
         setUpRecyclerView();
         getLatLong();
@@ -63,7 +70,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
 
     }
 
-    //method ini digunakan untuk menyiapkan recyclerView
+    //method ini digunakan untuk membangkitkan recyclerView
     public void setUpRecyclerView() {
         db = FirebaseDatabase.getInstance().getReference("menuMakanan");
         query = db.child(intent.getStringExtra("EXTRA_RESTO"));
@@ -77,6 +84,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         recyclerView.setAdapter(menuAdapter);
     }
 
+    //Implementasi polimorfisme dengan fungsi sama seperti pada class sebelumnya
     @Override
     protected void onStart() {
         super.onStart();
@@ -92,7 +100,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
             menuAdapter.stopListening();
     }
 
-    //method ini digunakan untuk mengambil data pada database kemudian menampilkannya pada TextView
+    //method ini digunakan untuk mengambil data pada database kemudian menampilkannya pada TextView dan gambar
     public void changeTextView() {
         db = FirebaseDatabase.getInstance().getReference("restaurant");
         db.child(intent.getStringExtra("EXTRA_RESTO")).addValueEventListener(new ValueEventListener() {
@@ -102,22 +110,12 @@ public class RestaurantDetailActivity extends AppCompatActivity {
                 String restoType = dataSnapshot.child("foodType").getValue(String.class);
                 String openHour = dataSnapshot.child("openHr").getValue(String.class);
                 String closeHour = dataSnapshot.child("closeHr").getValue(String.class);
+                String imgUrl = dataSnapshot.child("imgUrl").getValue(String.class);
                 Log.v("namaResto", restoName);
                 TVrestoName.setText(restoName);
                 TVrestoType.setText(restoType);
                 TVOpenHour.setText(openHour + "-" + closeHour);
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        db.child(intent.getStringExtra("EXTRA_RESTO")).child("imgUrl").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String imgUrl = dataSnapshot.getValue(String.class);
                 Picasso.get().load(imgUrl).resize(150, 150).centerInside().into(imgResto);
             }
 
@@ -128,7 +126,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         });
     }
 
-    //method ini digunakan untuk mengambil koordinat tiap restoran dari database
+    //method ini digunakan untuk mengambil koordinat tiap restoran dari database dan digabungkan menjadi perintah String
     public void getLatLong(){
         db = FirebaseDatabase.getInstance().getReference("restaurant");
         db.child(intent.getStringExtra("EXTRA_RESTO")).addValueEventListener(new ValueEventListener() {

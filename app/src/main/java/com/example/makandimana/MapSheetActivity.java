@@ -54,6 +54,9 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
      */
 
     private static final int REQUEST_CODE = 101;
+    public static Location locations;
+    public static int myBudget;
+    public static String myMenu;
     private BottomSheetBehavior mBottomSheetBehavior;
     private GoogleMap mMap;
     private RestoranAdapter restoranAdapter;
@@ -62,21 +65,20 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
     private List<String> restoListMarker;
     private List<String> restoTitleList;
     private FusedLocationProviderClient client;
-    public static Location locations;
-    public static int myBudget;
-    public static String myMenu;
-    public RecyclerView recyclerView;
-    public RecyclerView.LayoutManager layoutManager;
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_sheet);
 
+        //Mengambil data budget dan pilihan menu yang berasal dari activity sebelumnya
         Intent intent = getIntent();
         myBudget = Integer.valueOf(intent.getStringExtra("EXTRA_BUDGET"));
         myMenu = intent.getStringExtra("EXTRA_SPINNER");
 
+        //Menghubungkan xml dengan backend dan menambahkan interface onClickListener
         CardView cvSortJarak = findViewById(R.id.cvSortJarak);
         CardView cvSortHarga = findViewById(R.id.cvSortHarga);
         CardView cvChooseMenu = findViewById(R.id.cvChooseMenu);
@@ -84,15 +86,21 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
         cvSortHarga.setOnClickListener(this);
         cvChooseMenu.setOnClickListener(this);
 
+        //Mendapatkan lokasi user
         client = LocationServices.getFusedLocationProviderClient(this);
         fetchLastLocation();
+
+        //Membuat list restoran untuk pertama kali
         createRestoList();
 
+        //Menghubungkan xml bottomsheet dengan backend
         View bottomSheet = findViewById(R.id.bottom_sheet);
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
 
+        //Membangkitkan recyclerview
         setUpRecyclerView();
 
+        //Mengimplementasikan interface OnClickListener untuk tiap list recyclerview
         restoranAdapter.setOnItemClickListener(new RestoranAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -132,7 +140,7 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
 
     /*
         implementasi polimorfisme, method ini akan membuat marker sesuai jumlah restoran
-        dan dijalankan sebelum map dimunculkan
+        dan dijalankan sebelum map dimunculkan. Fitur Map menggunakan API Map milik Google.
     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -153,6 +161,7 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 15));
         mMap.addMarker(markerOptions);
 
+        //Mengiterasi database untuk membuat marker sesuai dengan data pada database
         db = FirebaseDatabase.getInstance().getReference("restaurant");
         db.orderByChild("minPrice").endAt(myBudget).addValueEventListener(new ValueEventListener() {
             @Override
@@ -221,7 +230,6 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
 
             }
         });
-
     }
 
     /*
@@ -233,15 +241,15 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
         FirebaseRecyclerOptions<RestoranModel> options = new FirebaseRecyclerOptions.Builder<RestoranModel>()
                 .setQuery(query, RestoranModel.class)
                 .build();
-
         restoranAdapter = new RestoranAdapter(options);
-
         recyclerView = findViewById(R.id.recylcerviewRestoran);
         layoutManager = new LinearLayoutManager(MapSheetActivity.this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(restoranAdapter);
     }
 
+    //Menerapkan pilar polimorfisme dengan adanya overried pada kedua method di bawah ini
+    //Override method onStart akan membuat adapter mengecek isi database dan onStop akan menghentikan pengecekan
     @Override
     protected void onStart() {
         super.onStart();
@@ -258,6 +266,7 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
         }
     }
 
+    //Mengoverride method onRequestPermissionsResult
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
@@ -273,11 +282,14 @@ public class MapSheetActivity extends AppCompatActivity implements OnMapReadyCal
         }
     }
 
-    //method onClick ini merupakan implementasi dari interface View.OnClickListener, sehingga menerapkan konsep polimorfisme
+    //Method onClick ini merupakan implementasi dari interface View.OnClickListener, sehingga menerapkan konsep polimorfisme
     @Override
     public void onClick(View v) {
         Query query;
         FirebaseRecyclerOptions<RestoranModel> options;
+
+        //akan melakukan pengecekan switch case dengan case tiap tombol yang berbeda
+        //untuk tiap tombol akan membangkitkan recyclerview kembali dengan method sorting / query database yang berbeda
         switch (v.getId()) {
             case R.id.cvSortHarga:
                 String sortMethod = "minPrice";

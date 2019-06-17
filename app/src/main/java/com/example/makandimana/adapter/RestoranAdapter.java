@@ -68,6 +68,14 @@ public class RestoranAdapter extends FirebaseRecyclerAdapter<RestoranModel, Rest
         return new RestoViewHolder(v);
     }
 
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
+    }
+
     public static class RestoViewHolder extends RecyclerView.ViewHolder {
 
         private TextView tvRestoName, tvFoodType, tvAvgPrice, tvDistance;
@@ -92,14 +100,6 @@ public class RestoranAdapter extends FirebaseRecyclerAdapter<RestoranModel, Rest
                 }
             });
         }
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
-    }
-
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.listener = listener;
     }
 
 }
